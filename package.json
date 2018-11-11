@@ -2,7 +2,7 @@
   "name": "nooket-trello",
   "version": "0.0.1",
   "description": "Pluggable component to add a trello-like kanban board to your nooket instance",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "rm -rf ./lib && tsc",
     "storybook": "start-storybook -p 6006",
