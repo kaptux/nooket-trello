@@ -1,11 +1,9 @@
 import * as React from 'react';
 
-export interface IHelloWorldProps {
-  color: string;
-}
+import { IViewPluginProps } from 'nooket-common';
 
-export default class HelloWorld extends React.Component<IHelloWorldProps, any> {
+export default class HelloWorld extends React.Component<IViewPluginProps, any> {
   public render() {
-    return <div style={{ color: this.props.color }}>Hello world!</div>;
+    return <div style={{ color: this.props.context.userId }}>Hello world!</div>;
   }
 }
