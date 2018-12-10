@@ -9,6 +9,10 @@ export interface ILane {
   order: number;
 }
 
+export interface IColorMapping {
+  color: string;
+  fieldValue: string;
+}
 export interface ICard {
   id: string;
   laneId: string;
@@ -18,18 +22,13 @@ export interface ICard {
   dueDate?: Date;
   hoursOfWork: number;
   order: number;
-  color: string;
+  colorMapping?: IColorMapping;
   noFiltered: boolean;
-}
-
-export interface IColor {
-  color: string;
-  name: string;
 }
 
 export interface IBoardData {
   lanes: ILane[];
   totalCards?: number;
   users?: IUser[];
-  colors?: IColor[];
+  colors?: IColorMapping[];
 }

@@ -11,8 +11,8 @@ import {
 import SettingsForm from './SettingsForm';
 import NewCardFormTemplate from './NewCardFormTemplate';
 import CardTemplate from './CardTemplate';
-import { instanceMapping, sortByOrder } from './utils';
-import { IBoardData, ICard, ILane } from './types';
+import { instanceMapping, sortByOrder, arrayOfObjectsToHashmap } from './utils';
+import { IBoardData, ICard, ILane, IColorMapping } from './types';
 
 import Board from 'react-trello';
 
@@ -75,6 +75,12 @@ const NooketTrelloContainer = styled.div`
     font-size: 14px;
     color: rgb(23, 57, 77);
     position: relative;
+
+    .color {
+      width: 40px;
+      height: 8px;
+      border-radius: 4px;
+    }
 
     .tagContainer {
       .tag {
@@ -184,7 +190,6 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
     cardDetails
   ) => {
     const { onSaveInstance, context } = this.props;
-    console.log(cardId, sourceLaneId, targetLaneId, position, cardDetails);
   };
   private setSettingsFormInstance = formRef => {
     this.settingsForm = formRef;
@@ -238,11 +243,18 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
       laneOrder
     );
     const cardUsersHashmap: { [id: string]: IUser } = {};
+    const cardColorsHashmap: { [color: string]: IColorMapping } = {};
+
+    let colorsMappingHashmap: { [value: string]: IColorMapping } = {};
+    if (settings.colorFieldMapping) {
+      colorsMappingHashmap = arrayOfObjectsToHashmap(
+        'fieldValue',
+        settings.colorFieldMapping.colorMapping
+      );
+    }
 
     data.forEach(instance => {
-      const card = instanceMapping<ICard>(settings, instance);
-      card.title = instance.title;
-      card.id = instance._id;
+      const card = instanceMapping(settings, instance, colorsMappingHashmap);
       card.order = instanceOrder[card.id] || MAX_ORDER;
 
       if (card.assigned) {
@@ -258,10 +270,21 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
         } as IUser;
       }
 
+      if (card.colorMapping) {
+        cardColorsHashmap[card.colorMapping.color] = card.colorMapping;
+      }
+
       card.noFiltered = this.checkFilter(
         card.assigned || NO_ASSIGNED_ID,
         assignedFilter
       );
+
+      card.noFiltered =
+        card.noFiltered &&
+        this.checkFilter(
+          (card.colorMapping || ({} as IColorMapping)).color,
+          colorFilter
+        );
 
       const lane =
         lanesHashmap[card.laneId] ||
@@ -285,6 +308,7 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
       lanes: (Object as any).values(lanesHashmap),
       totalCards: 0,
       users: (Object as any).values(cardUsersHashmap),
+      colors: (Object as any).values(cardColorsHashmap),
     };
 
     return this.initialBoardState;
@@ -337,7 +361,35 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
                 style={{ width: 200, marginLeft: 10 }}
                 placeholder="Color"
                 value={colorFilter}
-              />
+                allowClear={true}
+                onChange={value => {
+                  this.handleFilterChange('colorFilter', value);
+                }}
+              >
+                {data.colors.map(c => (
+                  <Select.Option key={c.color} value={c.color}>
+                    <div
+                      style={{
+                        width: 30,
+                        height: 15,
+                        display: 'inline-block',
+                        marginTop: 7,
+                        backgroundColor: c.color,
+                      }}
+                    >
+                      &nbsp;
+                    </div>
+                    <span
+                      style={{
+                        marginLeft: 7,
+                        verticalAlign: 'top',
+                      }}
+                    >
+                      {c.fieldValue}
+                    </span>
+                  </Select.Option>
+                ))}
+              </Select>
             </div>
             <div className="toolbox">
               <Button icon="setting" onClick={this.handleSettingClick} />

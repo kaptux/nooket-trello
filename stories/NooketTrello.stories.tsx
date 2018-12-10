@@ -36,6 +36,23 @@ const props: IViewPluginProps = {
       laneId: 'status',
       dueDate: 'releaseDate',
       hoursOfWork: 'time',
+      colorFieldMapping: {
+        fieldCode: 'priority',
+        colorMapping: [
+          {
+            color: '#f2d600',
+            fieldValue: 'low',
+          },
+          {
+            color: '#ff9f1a',
+            fieldValue: 'normal',
+          },
+          {
+            color: '#eb5a46',
+            fieldValue: 'hight',
+          },
+        ],
+      },
     },
   },
   context,

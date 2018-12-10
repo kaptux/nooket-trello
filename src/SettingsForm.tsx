@@ -1,51 +1,16 @@
-import { Divider, Form, Input, Select } from 'antd';
-import { FieldTypeEnum, ICategory } from 'nooket-common';
 import * as React from 'react';
+import { Divider, Form, Input, Select } from 'antd';
+import FieldSelect from './FieldSelect';
+import FieldColorInput from './FieldColorInput';
+import { FieldTypeEnum, RuleTypeEnum } from 'nooket-common';
+import { getDefaultFieldOfType } from './utils';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-function getFieldsOfType(category: ICategory, type?: FieldTypeEnum) {
-  let fields = category.fields;
-  if (type) {
-    fields = category.fields.filter(f => f.type === type);
-  }
-  return fields;
-}
-
-function getDefaultFieldOfType(category: ICategory, type?: FieldTypeEnum) {
-  let res;
-  const fields = getFieldsOfType(category, type);
-  if (fields.length > 0) {
-    res = fields[0].code;
-  }
-  return res;
-}
-
 class SettingsForm extends React.Component<any, any> {
-  private getFieldsSelect(type?: FieldTypeEnum) {
-    const { category } = this.props;
-
-    const fields = getFieldsOfType(category, type);
-
-    let firstValue;
-    if (fields.length > 0) {
-      firstValue = fields[0].code;
-    }
-
-    return (
-      <Select>
-        {fields.map(f => (
-          <Option key={f.code} value={f.code}>
-            {f.name}
-          </Option>
-        ))}
-      </Select>
-    );
-  }
-
   public render() {
-    const { form } = this.props;
+    const { form, category } = this.props;
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
@@ -68,7 +33,7 @@ class SettingsForm extends React.Component<any, any> {
         >
           {getFieldDecorator('laneId', {
             rules: [{ required: true, message: 'A field is required' }],
-          })(this.getFieldsSelect())}
+          })(<FieldSelect category={category} />)}
         </FormItem>
         <Divider orientation="left">Optional</Divider>
         <FormItem
@@ -77,7 +42,7 @@ class SettingsForm extends React.Component<any, any> {
           extra="User to wich is assigned the task"
         >
           {getFieldDecorator('assigned', {})(
-            this.getFieldsSelect(FieldTypeEnum.MENTION)
+            <FieldSelect category={category} type={FieldTypeEnum.MENTION} />
           )}
         </FormItem>
         <FormItem
@@ -86,7 +51,7 @@ class SettingsForm extends React.Component<any, any> {
           extra="Stimated hours of work"
         >
           {getFieldDecorator('hoursOfWork', {})(
-            this.getFieldsSelect(FieldTypeEnum.DECIMAL)
+            <FieldSelect category={category} type={FieldTypeEnum.DECIMAL} />
           )}
         </FormItem>
         <FormItem
@@ -95,7 +60,16 @@ class SettingsForm extends React.Component<any, any> {
           extra="Planed due date"
         >
           {getFieldDecorator('dueDate', {})(
-            this.getFieldsSelect(FieldTypeEnum.DATE)
+            <FieldSelect category={category} type={FieldTypeEnum.DATE} />
+          )}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="Color field"
+          extra="Colored the card in base a field values"
+        >
+          {getFieldDecorator('colorFieldMapping', {})(
+            <FieldColorInput category={category} type={FieldTypeEnum.STRING} />
           )}
         </FormItem>
       </Form>
@@ -105,7 +79,14 @@ class SettingsForm extends React.Component<any, any> {
 
 export default Form.create({
   mapPropsToFields: (props: any) => {
-    const { category, laneId, assigned, hoursOfWork, dueDate } = props;
+    const {
+      category,
+      laneId,
+      assigned,
+      hoursOfWork,
+      dueDate,
+      colorFieldMapping,
+    } = props;
     return {
       laneId: Form.createFormField({
         value: laneId,
@@ -121,6 +102,7 @@ export default Form.create({
       dueDate: Form.createFormField({
         value: dueDate || getDefaultFieldOfType(category, FieldTypeEnum.DATE),
       }),
+      colorFieldMapping: Form.createFormField({ value: colorFieldMapping }),
     };
   },
 })(SettingsForm);

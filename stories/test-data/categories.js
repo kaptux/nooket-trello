@@ -82,6 +82,20 @@ export const categories = [
         ],
       },
       {
+        code: 'priority',
+        name: 'Priority',
+        order: 0,
+        layout: 1,
+        description: 'Priority of the task',
+        type: FieldTypeEnum.STRING,
+        rules: [
+          {
+            rule: RuleTypeEnum.ALLOWED_VALUES,
+            value: 'hight,normal,low',
+          },
+        ],
+      },
+      {
         code: 'time',
         name: 'Time',
         order: 1,

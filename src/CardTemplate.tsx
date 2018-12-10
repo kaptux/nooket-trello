@@ -7,9 +7,16 @@ export default function CardTemplate({
   dueDate,
   assignedUser,
   hoursOfWork,
+  colorMapping,
 }: any) {
   return (
     <div className="card">
+      {colorMapping && (
+        <div
+          className="color"
+          style={{ backgroundColor: colorMapping.color }}
+        />
+      )}
       <div>{title}</div>
       <div className="tagContainer">
         {dueDate && (
