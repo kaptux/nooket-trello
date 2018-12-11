@@ -80,6 +80,7 @@ const NooketTrelloContainer = styled.div`
       width: 40px;
       height: 8px;
       border-radius: 4px;
+      margin-bottom: 4px;
     }
 
     .tagContainer {
@@ -116,7 +117,6 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
   private settingsForm;
   private reRenderBoard = true;
   private lastBoardRender;
-  private initialBoardState;
 
   private handleSaveSettings = () => {
     const { onSaveSettings } = this.props;
@@ -132,35 +132,6 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
       onSaveSettings(values, () => this.setState({ showSettingDialog: false }));
       this.reRenderBoard = false;
     });
-  };
-  private buildInitialState = () => {
-    const instanceOrder = {};
-    const laneOrder = {};
-
-    this.initialBoardState.lanes.forEach((l, i) => {
-      laneOrder[l.id] = i;
-      l.cards.forEach((c, j) => {
-        instanceOrder[c.id] = j;
-      });
-    });
-
-    return {
-      instanceOrder,
-      laneOrder,
-    };
-  };
-  private handleLaneDragEnd = (laneId, newPosition) => {
-    console.log(laneId, newPosition);
-    const { onSaveState, view } = this.props;
-
-    let viewState = view.state;
-    if (!viewState) {
-      viewState = this.buildInitialState();
-    }
-
-    viewState.laneOrder[laneId] = newPosition;
-
-    onSaveState(viewState);
   };
   private handleCancelSettings = () => {
     this.setState({ showSettingDialog: false });
@@ -182,6 +153,21 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
     this.setState({ instanceView });
     this.reRenderBoard = false;
   };
+  private handleDataChange = boardState => {
+    const { onSaveState } = this.props;
+    const instanceOrder = {};
+    const laneOrder = {};
+
+    boardState.lanes.forEach((l, i) => {
+      laneOrder[l.id] = i;
+      l.cards.forEach((c, j) => {
+        instanceOrder[c.id] = j;
+      });
+    });
+
+    onSaveState({ laneOrder, instanceOrder });
+    this.reRenderBoard = false;
+  };
   private handleDragEnd = (
     cardId,
     sourceLaneId,
@@ -189,7 +175,22 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
     position,
     cardDetails
   ) => {
-    const { onSaveInstance, context } = this.props;
+    if (sourceLaneId !== targetLaneId) {
+      const {
+        onSaveInstance,
+        context,
+        view: { settings },
+      } = this.props;
+
+      const fieldToUpdate = settings.laneId;
+      const instance = {
+        _id: cardDetails.id,
+        fields: [{ code: fieldToUpdate, value: targetLaneId }],
+      };
+
+      onSaveInstance(context.userId, instance);
+      this.reRenderBoard = false;
+    }
   };
   private setSettingsFormInstance = formRef => {
     this.settingsForm = formRef;
@@ -304,14 +305,12 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
       l.cards = l.cards.filter(c => c.noFiltered).sort(sortByOrder);
     });
 
-    this.initialBoardState = {
+    return {
       lanes: (Object as any).values(lanesHashmap),
       totalCards: 0,
       users: (Object as any).values(cardUsersHashmap),
       colors: (Object as any).values(cardColorsHashmap),
     };
-
-    return this.initialBoardState;
   }
 
   public renderBoard() {
@@ -403,11 +402,11 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
             draggable={true}
             hideCardDeleteIcon={true}
             onCardClick={this.handleCardClick}
-            handleLaneDragEnd={this.handleLaneDragEnd}
             handleDragEnd={this.handleDragEnd}
             newCardTemplate={<NewCardFormTemplate />}
             customCardLayout={true}
             className="boardContainer"
+            onDataChange={this.handleDataChange}
           >
             <CardTemplate />
           </Board>
@@ -442,6 +441,7 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
             {...settings || {}}
           />
         </Modal>
+        {instanceView}
       </NooketTrelloContainer>
     );
   }
