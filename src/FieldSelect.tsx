@@ -17,28 +17,22 @@ export interface IFieldSelectProps {
   style?: any;
 }
 
-export default function FieldsSelect({
-  category,
-  type,
-  rule,
-  value,
-  onChange,
-  style,
-}: IFieldSelectProps) {
-  const fields = getFieldsOfType(category, type, rule);
+export default class FieldsSelect extends React.Component<
+  IFieldSelectProps,
+  any
+> {
+  public render() {
+    const { category, type, rule, value, onChange, style } = this.props;
+    const fields = getFieldsOfType(category, type, rule);
 
-  let firstValue;
-  if (fields.length > 0) {
-    firstValue = fields[0].code;
+    return (
+      <Select value={value} onChange={onChange} style={style}>
+        {fields.map(f => (
+          <Option key={f.code} value={f.code}>
+            {f.name}
+          </Option>
+        ))}
+      </Select>
+    );
   }
-
-  return (
-    <Select value={value} onChange={onChange} style={style}>
-      {fields.map(f => (
-        <Option key={f.code} value={f.code}>
-          {f.name}
-        </Option>
-      ))}
-    </Select>
-  );
 }

@@ -144,7 +144,7 @@ class FieldColorInput extends React.Component<FieldColorInputProps, any> {
   }
   private getColorMappingValue({ fieldValue, color }) {
     return (
-      <FieldColorInputContainer>
+      <FieldColorInputContainer key={color}>
         <div className="color-select">
           <div
             className="color"
@@ -158,7 +158,7 @@ class FieldColorInput extends React.Component<FieldColorInputProps, any> {
       </FieldColorInputContainer>
     );
   }
-  render() {
+  public render() {
     const { category, type, rule, value = {} as IValueType } = this.props;
     const { fieldCode, colorMapping = [] } = value;
 

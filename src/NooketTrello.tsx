@@ -158,10 +158,11 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
     const instanceOrder = {};
     const laneOrder = {};
 
+    // Avoid index 0
     boardState.lanes.forEach((l, i) => {
-      laneOrder[l.id] = i;
+      laneOrder[l.id] = i + 1;
       l.cards.forEach((c, j) => {
-        instanceOrder[c.id] = j;
+        instanceOrder[c.id] = j + 1;
       });
     });
 
@@ -306,7 +307,7 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
     });
 
     return {
-      lanes: (Object as any).values(lanesHashmap),
+      lanes,
       totalCards: 0,
       users: (Object as any).values(cardUsersHashmap),
       colors: (Object as any).values(cardColorsHashmap),

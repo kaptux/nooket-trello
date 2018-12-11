@@ -30,7 +30,15 @@ const props: IViewPluginProps = {
   view: {
     type: '',
     query: { categoryId: '2' },
-    state: undefined,
+    state: {
+      instanceOrder: undefined,
+      laneOrder: {
+        blocked: 1,
+        pending: 2,
+        'in progress': 3,
+        completed: 4,
+      },
+    },
     settings: {
       assigned: 'assignedTo',
       laneId: 'status',
