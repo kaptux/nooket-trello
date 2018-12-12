@@ -15,7 +15,7 @@ const Container = styled.div`
     flex: 1;
     border: solid 2px blue;
     overflow: auto;
-    padding: 16px 16px 0px 16px;
+    position: relative;
   }
 `;
 

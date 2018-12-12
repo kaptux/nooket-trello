@@ -28,6 +28,7 @@ const NooketTrelloContainer = styled.div`
     display: flex;
     text-align: right;
     height: 32px;
+    margin: 16px 16px 0 16px;
 
     .quick-filters {
       flex: 1;
@@ -68,7 +69,7 @@ const NooketTrelloContainer = styled.div`
   }
   .smooth-dnd-draggable-wrapper {
     section {
-      max-height: 100%;
+      max-height: 99%;
       padding-top: 5px;
       padding-left: 5px;
       padding-right: 0px;
@@ -84,6 +85,9 @@ const NooketTrelloContainer = styled.div`
         border-radius: 5px;
       }
     }
+  }
+  .horizontal > .smooth-dnd-draggable-wrapper:first-child {
+    padding-left: 11px;
   }
   .card {
     padding: 5px 10px;
