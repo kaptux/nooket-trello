@@ -149,7 +149,6 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
       }
 
       onSaveSettings(values, () => this.setState({ showSettingDialog: false }));
-      this.reRenderBoard = false;
     });
   };
   private handleCancelSettings = () => {
@@ -185,8 +184,8 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
       });
     });
 
-    onSaveState({ laneOrder, instanceOrder });
     this.reRenderBoard = false;
+    onSaveState({ laneOrder, instanceOrder });
   };
   private handleDragEnd = (
     cardId,
