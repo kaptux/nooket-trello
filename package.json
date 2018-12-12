@@ -1,6 +1,6 @@
 {
   "name": "nooket-trello",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Pluggable component to add a trello-like kanban board to your nooket instance",
   "main": "lib/index.js",
   "scripts": {
@@ -52,7 +52,7 @@
     "nooket-common": "0.0.7"
   },
   "dependencies": {
-    "react-trello": "github:kaptux/react-trello#v2.0.8"
+    "react-trello": "github:kaptux/react-trello#v2.0.9"
   },
   "peerDependencies": {
     "react": "^16.5.2",
