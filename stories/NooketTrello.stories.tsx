@@ -4,6 +4,7 @@ import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import { IViewPluginProps } from 'nooket-common';
 import NooketTrello from '../src/NooketTrello';
+import StoryContainer from './StoryContainer';
 
 import { context } from './test-data/context';
 import { instances } from './test-data/instances';
@@ -74,4 +75,8 @@ const props: IViewPluginProps = {
 
 storiesOf('NooketTrello', module)
   .add('no-settings', () => <NooketTrello {...propsNoSettings} />)
-  .add('default', () => <NooketTrello {...props} />);
+  .add('default', () => (
+    <StoryContainer>
+      <NooketTrello {...props} />
+    </StoryContainer>
+  ));

@@ -22,7 +22,7 @@ const NO_ASSIGNED_ID = '00001';
 const NooketTrelloContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
 
   .head {
     display: flex;
@@ -39,11 +39,18 @@ const NooketTrelloContainer = styled.div`
     }
   }
   .boardContainer {
+    padding: 5px 0px;
     background-color: #fff;
-
-    section {
-      max-height: 95vh;
-    }
+    flex: 1;
+  }
+  .boardContainer::-webkit-scrollbar {
+    width: 5px;
+    height: 10px;
+    background-color: #eee;
+  }
+  .boardContainer::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
   }
   .draggingCard {
     background-color: #7fffd4;
@@ -56,8 +63,12 @@ const NooketTrelloContainer = styled.div`
     transform: rotate(2deg);
     border: 1px dashed #a5916c;
   }
+  .smooth-dnd-container {
+    height: 100%;
+  }
   .smooth-dnd-draggable-wrapper {
     section {
+      max-height: 100%;
       padding-top: 5px;
       padding-left: 5px;
       padding-right: 0px;
@@ -67,6 +78,10 @@ const NooketTrelloContainer = styled.div`
       div::-webkit-scrollbar {
         width: 5px;
         background-color: #eee;
+      }
+      div::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 5px;
       }
     }
   }
