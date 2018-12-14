@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   IInstance,
   ICategory,
@@ -8,7 +7,6 @@ import {
   CommonFieldsList,
 } from 'nooket-common';
 import { ICard } from 'types';
-import { Select } from 'antd';
 
 export function arrayOfObjectsToHashmap<T>(
   objectKey: string,
