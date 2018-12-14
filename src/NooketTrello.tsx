@@ -331,7 +331,9 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
     const lanes = (Object as any).values(lanesHashmap).sort(sortByOrder);
     lanes.forEach(l => {
       l.cards = l.cards.filter(c => c.noFiltered).sort(sortByOrder);
-      l.label = l.cards.length;
+      if (l.cards.length > 0) {
+        l.label = l.cards.length.toString();
+      }
     });
 
     return {
