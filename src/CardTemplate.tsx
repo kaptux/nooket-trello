@@ -19,6 +19,12 @@ export default function CardTemplate({
       )}
       <div>{title}</div>
       <div className="tagContainer">
+        {hoursOfWork && (
+          <div className="tag">
+            {`${hoursOfWork}h`}
+            &nbsp; &nbsp;
+          </div>
+        )}
         {dueDate && (
           <div className="tag">
             <Icon type="clock-circle" />

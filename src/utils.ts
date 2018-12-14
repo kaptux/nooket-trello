@@ -5,6 +5,7 @@ import {
   FieldTypeEnum,
   RuleTypeEnum,
   ICategoryField,
+  CommonFieldsList,
 } from 'nooket-common';
 import { ICard } from 'types';
 import { Select } from 'antd';
@@ -27,7 +28,14 @@ export function instanceMapping(
 ): ICard {
   const { colorFieldMapping, ...fieldMapping } = settings;
 
-  const fieldsHashmap = arrayOfObjectsToHashmap('code', instance.fields);
+  const commonFieldsValues = CommonFieldsList.map(f => ({
+    code: f.code,
+    value: instance[f.code],
+  }));
+  const fieldsHashmap = arrayOfObjectsToHashmap('code', [
+    ...instance.fields,
+    ...commonFieldsValues,
+  ]);
   const res = {} as ICard;
   res.title = instance.title;
   res.id = instance._id;
@@ -58,12 +66,12 @@ export function getFieldsOfType(
   type?: FieldTypeEnum,
   rule?: RuleTypeEnum
 ): ICategoryField[] {
-  let fields = category.fields;
+  let fields = [...category.fields, ...CommonFieldsList];
   if (type) {
-    fields = category.fields.filter(f => f.type === type);
+    fields = fields.filter(f => f.type === type);
     if (rule) {
       fields = fields.filter(
-        f => f.rules && f.rules.every(r => r.rule === rule)
+        f => f.rules && f.rules.some(r => r.rule === rule)
       );
     }
   }

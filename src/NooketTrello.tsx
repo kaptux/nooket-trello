@@ -43,6 +43,15 @@ const NooketTrelloContainer = styled.div`
     padding: 5px 0px;
     background-color: #fff;
     flex: 1;
+
+    header {
+      span {
+        font-weight: bold;
+        font-size: 15px;
+        line-height: 18px;
+        width: 70%;
+      }
+    }
   }
   .boardContainer::-webkit-scrollbar {
     width: 5px;
@@ -322,6 +331,7 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
     const lanes = (Object as any).values(lanesHashmap).sort(sortByOrder);
     lanes.forEach(l => {
       l.cards = l.cards.filter(c => c.noFiltered).sort(sortByOrder);
+      l.label = l.cards.length;
     });
 
     return {
