@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button, Modal, Select, Avatar } from 'antd';
+import { Button, Drawer, Select, Avatar } from 'antd';
 import {
   IViewPluginProps,
   IUser,
@@ -133,6 +133,17 @@ const NooketTrelloContainer = styled.div`
       height: 24px;
     }
   }
+`;
+
+const DrawerButtons = styled.div`
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #e9e9e9;
+  padding: 10px 16px;
+  background: #fff;
+  text-align: right;
 `;
 
 class NooketTrello extends React.Component<IViewPluginProps, any> {
@@ -459,19 +470,33 @@ class NooketTrello extends React.Component<IViewPluginProps, any> {
     return (
       <NooketTrelloContainer>
         {this.renderBoard()}
-        <Modal
+        <Drawer
           visible={showSettingDialog || !view.settings}
-          title="Settings"
-          onOk={this.handleSaveSettings}
-          onCancel={this.handleCancelSettings}
-          cancelButtonProps={{ disabled: !view.settings }}
+          width={500}
+          title="View settings"
+          onClose={this.handleCancelSettings}
+          style={{
+            paddingBottom: '32px',
+          }}
         >
           <SettingsForm
             wrappedComponentRef={this.setSettingsFormInstance}
             category={category}
             {...settings || {}}
           />
-        </Modal>
+          <DrawerButtons>
+            <Button
+              onClick={this.handleCancelSettings}
+              style={{ marginRight: 8 }}
+              disabled={!view.settings}
+            >
+              Cancel
+            </Button>
+            <Button onClick={this.handleSaveSettings} type="primary">
+              Save
+            </Button>
+          </DrawerButtons>
+        </Drawer>
         {instanceView}
       </NooketTrelloContainer>
     );
